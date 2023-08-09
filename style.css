@@ -1,0 +1,118 @@
+* {
+  box-sizing: border-box;
+}
+html, body {
+  padding: 0;
+  margin: 0;
+}
+ul, li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+input {
+  outline: none;
+  border: none;
+}
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid;
+  border-color: black;
+  color: black;
+  width: 450px;
+  margin: 355px auto;
+  height: 610px;
+}
+#list-container {
+  width: 390px;
+  height: 420px;
+  border-bottom: 1px solid;
+  overflow: auto;
+}
+/* 스크롤 */
+#list-container::-webkit-scrollbar {
+  width: 5px;
+}
+#list-container::-webkit-scrollbar-thumb {
+  height: auto;
+  background: white;
+  border-radius: 10px;
+}
+#todo-list li {
+  border-top: 1px solid;
+  padding: 15px 0 15px 0;
+}
+.checkbox-btn {
+  border: none;
+  background-color: transparent;
+  vertical-align: 1px;
+  margin-right: 10px;
+  color: inherit;
+  cursor: pointer;
+}
+.edit-input {
+  width: 320px;
+  font-size: 15px;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  background-color: inherit;
+}
+#todo-list li span {
+  display: inline-block;
+  font-weight: 500;
+  width: 320px;
+  font-size: 15px;
+}
+#todo-list li button:not(#add-btn, .checkbox-btn) {
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  width: 15px;
+  height: 15px;
+  float: right;
+  margin-top: 3px;
+  padding-left: 3px;
+  color: inherit;
+}
+#todo-list li:last-child {
+  border-bottom: 1px solid;
+}
+#add-btn {
+  border: none;
+  background-color: transparent;
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
+  padding-left: 1px;
+  color: inherit;
+  vertical-align: 1.5px;
+}
+#todo-form input {
+  width: 320px;
+  height: 25px;
+  font-size: 15px;
+  padding: 0;
+  color: inherit;
+  background-color: inherit;
+}
+#todo-form input::placeholder {
+  color: inherit;
+}
+#button-container {
+  width: 390px;
+  display: flex;
+  justify-content: space-between;
+  margin: 35px 0 35px 0;
+}
+#button-container button {
+  width: 80px;
+  height: 40px;
+  border: 1.5px solid;
+  color: inherit;
+  border-color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+}
