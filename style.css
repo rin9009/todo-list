@@ -37,7 +37,7 @@ input {
 }
 #list-container::-webkit-scrollbar-thumb {
   height: auto;
-  background: white;
+  background: inherit;
   border-radius: 10px;
 }
 #todo-list li {

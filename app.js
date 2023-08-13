@@ -62,6 +62,9 @@ function handleEdit(event, todoId) {
 
   input.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
+      if (e.target.value === "") { // 빈칸일 경우 원래 있던 값으로 해준다, 즉 수정되지 않음
+        e.target.value = spanText;
+      }
       todoUpdate(li, e.target.value, todoId);
       input.remove();
     }
@@ -70,23 +73,27 @@ function handleEdit(event, todoId) {
 
 // update 함수는 map() 메서드를 이용하여 수정한 값으로 교체하고 저장함수를 호출하여 저장한 후
 // updateview에 해당 리스트와 값을 인자값으로 해서 호출한다
+// parseInt를 해주지 않으면 수정 부분에서 빈칸으로 했을 때 원래 값이 들어가면서 나오는 것은 잘 나오나 다음 수정 떄 localstorage바뀌지 않는 것을 확인 parseInt를 해주면 잘 동작함
+// 해당 투두의 id로 check값을 가져와 updateview함수에 전달해준다
 function todoUpdate(todoLi, text, todoId) {
-  const newTodo = todoList.map((toDo) => toDo.id === todoId ? ({...toDo, todoValue: text}) : toDo);
+  const newTodo = todoList.map((toDo) => toDo.id === parseInt(todoId) ? ({...toDo, todoValue: text}) : toDo);
+  const updateLi = todoList.filter(toDo => toDo.id == parseInt(todoId)); // 해당 투두의 대한 정보를 id로 가져온다
+  let checked = updateLi[0].check;
 
+  // console.log(check);
   todoList = newTodo;
   
   todoSave();
-  todosUpdateView(todoLi, text);
+  todosUpdateView(todoLi, text, checked);
 }
 
 // updateview는 원래 view처럼 화면에 수정한 값으로 투두가 나오게 한다
-function todosUpdateView(todoLi, text) {
+function todosUpdateView(todoLi, text, check) {
   const li = todoLi;
 
   const checkBtn = document.createElement("button");
   checkBtn.className = "checkbox-btn";
   const checkIcon = document.createElement("i");
-  checkIcon.className = "fa-sharp fa-regular fa-square";
   checkIcon.addEventListener("click", handleCheck);
 
   const span = document.createElement("span");
@@ -103,6 +110,14 @@ function todosUpdateView(todoLi, text) {
   li.appendChild(span);
   li.appendChild(button);
   button.appendChild(icon);
+
+  if (check == false) {
+    checkIcon.className = "fa-sharp fa-regular fa-square";
+    span.style.textDecoration = "none"
+  } else {
+    checkIcon.className = "fa-sharp fa-regular fa-square-check";
+    span.style.textDecoration = "line-through"
+  }
 }
 
 // check가 되었는지 아닌지 확인하고 체크가 되어 있으면 span에 중앙선 그려주고 check를 true로 바꾼다 체크가 안 되어 있으면 check를 false로 바꾸고 span에중앙 선을 지운다 문제는 하나의 변수로 같이 쓰다보니 다른 체크박스에서 바뀐 것이 그대로 되어서 한번에 안될 때가 있다 
@@ -111,9 +126,9 @@ function handleCheck(event) {
   const icon = event.target;
   const span = event.target.parentNode.nextElementSibling;
   const liCheck = event.target.parentNode.parentNode.id;
-  const changeList = todoList.filter(toDo => toDo.id == parseInt(liCheck));
+  const changeLi = todoList.filter(toDo => toDo.id == parseInt(liCheck));
 
-  let checked = changeList[0].check == false ? true : false;
+  let checked = changeLi[0].check === false ? true : false;
 
   const newTodo = todoList.map((toDo) => toDo.id === parseInt(liCheck) ? ({...toDo, check: checked}) : toDo);
 
@@ -179,6 +194,14 @@ function handleAdd(event) {
   event.preventDefault();
 
   const newTodo = addInput.value;
+
+  if (newTodo === "") { // input이 빈칸인 상태일 경우
+    addInput.placeholder = "빈칸입니다.";
+    return; // 빈칸일 경우 함수를 나와 할 일이 추가되지 않는다
+  } else {
+    addInput.placeholder = "ADD.."; // 빈칸일 때 placeholder가 다음 할 일을 제대로 썼을 때도 이어져 빈칸이 아닐 경우 처음 상태로 바꿔준다
+  }
+
   addInput.value = "";
 
   const newTodoObj = {
@@ -210,39 +233,43 @@ function colorChange(change) {
   const color = document.getElementById("container");
 
   switch(change) {
-    case 0:
+    case 0: // 검은색
       color.style.borderColor = "black";
       color.style.color = "black";
       break;
-    case 1:
+    case 1: // 선명한 주황색
       color.style.borderColor = "#F6B221";
       color.style.color = "#F6B221";
       break;
-    case 2:
+    case 2: // 선명한 자주색
       color.style.borderColor = "#8F42D9";
       color.style.color = "#8F42D9";
       break;
-    case 3:
+    case 3: // 밝은 회색 녹색
       color.style.borderColor = "#7AAC7B";
       color.style.color = "#7AAC7B";
       break;
-    case 4:
+    case 4: // 흰색
       color.style.borderColor = "#E6E6E6";
       color.style.color = "#E6E6E6";
       break;
-    case 5:
+    case 5: // 생생한 파란색
       color.style.borderColor = "#00A8D6";
       color.style.color = "#00A8D6";
       break;
-    case 6:
-      color.style.borderColor = "#FF7D8F";
-      color.style.color = "#FF7D8F";
+    case 6: // 빛 핑크
+      color.style.borderColor = "#FF96C1";
+      color.style.color = "#FF96C1";
       break;
-    case 7:
+    case 7: // 회색 파란색
       color.style.borderColor = "#556675";
       color.style.color = "#556675";
       break;
-    default:
+    case 8: // 선명한 빨간색
+      color.style.borderColor = "#FF525A";
+      color.style.color = "#FF525A";
+      break;
+    default: // 둔한 주황색(갈색)
       color.style.borderColor = "#B87738";
       color.style.color = "#B87738";
       colorNumber = -1; // 마지막 색은 -1로 해줘 함수가 실행되었을 때 colorNumber++에 의해 0인 다시 처음 색으로 돌아올 수 있게 해준다
@@ -261,16 +288,16 @@ function paperChange(change) {
   paper.style.backgroundPosition = "";
 
   switch(change) {
-    case 0:
+    case 0: // 흰색
       paper.style.backgroundColor = "white";
       break;
-    case 1:
+    case 1: // 선명한 주황색
       paper.style.backgroundColor = "#FFC241";
       break;
-    case 2:
-      paper.style.backgroundColor = "#AF78E3";
+    case 2: // 빛 자주색
+      paper.style.backgroundColor = "#BF93E9";
       break;
-    case 3:
+    case 3: // 밝은 회색 녹색
       paper.style.backgroundColor = "#99C999";
       break;
     case 4: // 흰 배경의 모눈
@@ -285,16 +312,31 @@ function paperChange(change) {
       paper.style.backgroundSize = "100px 100px, 100px 100px, 20px 20px, 20px 20px";
       paper.style.backgroundPosition = "-2px -2px, -2px -2px, -1px -1px, -1px -1px";
       break;
-    case 6:
+    case 6: // 빛 파란색
       paper.style.backgroundColor = "#62C9E5";
       break;
-    case 7:
-      paper.style.backgroundColor = "#FFA2AF";
+    case 7: // 창백한 핑크
+      paper.style.backgroundColor = "#FFCBE0";
       break;
-    case 8:
+    case 8: // 밝은 회색 파란색
       paper.style.backgroundColor = "#85919C";
       break;
-    default:
+    case 9: // 창백한 파란색
+      paper.style.backgroundColor = "#BBE7F3";
+      break;
+    case 10: // 빛 주황색
+      paper.style.backgroundColor = "#FFDC92";
+      break;
+    case 11: // 창백한 빨간색
+      paper.style.backgroundColor = "#FFC8CB";
+      break;
+    case 12: // 창백한 녹색
+      paper.style.backgroundColor = "#D1F7D1";
+      break;
+    case 13: // 창백한 자주색
+      paper.style.backgroundColor = "#E1CFF3";
+      break;
+    default: // 부드러운 주황색(갈색)
       paper.style.backgroundColor = "#C29060";
       paperNumber = -1;
       break;
